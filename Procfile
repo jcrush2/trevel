@@ -1,1 +1,1 @@
-web: python market.py
+web: python bot.py
