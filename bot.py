@@ -36,7 +36,7 @@ def bomb(msg):
 	nums=list(range(1, n))
 	random.shuffle(nums)
 	keyboard = telebot.types.InlineKeyboardMarkup()
-	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=f"{x}") for x in nums]
+	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
 	keyboard.add(*button_list)
 	bot.send_message(chat_id=msg.chat.id, text='Text',reply_markup=keyboard)
 		
@@ -44,16 +44,16 @@ def bomb(msg):
 def query_handler(call):
 	
 
-	if  call.data == f"{1}":
-		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💥", reply_markup=keyboard)
+	if  call.data == 1:
+
 		bot.send_message(call.message.chat.id, f"💥 {call.from_user.first_name} подорвался -5, перезапустить /bomb", parse_mode="HTML")
 	
-	if  call.data == f"{2}":
-		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💣", reply_markup=keyboard)
+	if  call.data == 2:
+
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 	
 	else:
-		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=" ", reply_markup=keyboard)	
+		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} мимо бомбу +5, перезапустить /bomb", parse_mode="HTML")	
 
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
