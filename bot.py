@@ -15,6 +15,16 @@ import config
 TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
+@bot.message_handler(commands=["start"], func=is_my_message)
+def start(msg):
+	"""
+	Функция для ответа на сообщение-команду для приветствия пользователя.
+	:param msg: Объект сообщения-команды
+	"""
+	reply_text = (
+			"Здравствуйте, я бот, который отвечает за " +
+			" подсчет кармы в чате @khvchat.")
+	bot.send_message(msg.chat.id, reply_text)
 
 @bot.message_handler(commands=["bo"], func=is_my_message)
 def bomb(msg):
@@ -29,8 +39,8 @@ def bomb(msg):
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	keyboard.row_width = 3
 
-	for i in n:
-		keyboard.add(telebot.types.InlineKeyboardButton(text=f'•', callback_data=miner[i]))
+	for i in 9:
+		keyboard.add(telebot.types.InlineKeyboardButton(text=f'•', callback_data=i))
 	msg_id = bot.send_message(chat_id=msg.chat.id, text=f'Разминируйте минное поле', reply_markup=keyboard).message_id
 
 
