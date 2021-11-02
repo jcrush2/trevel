@@ -48,7 +48,7 @@ def query_handler(call):
 	if call.message:
 		if  call.data == "1":
 			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1", reply_markup=keyboard)
+			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1")
 			return
 		if  call.data == "2":
 			bot.send_message(call.message.chat.id, f"🎉 2 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
