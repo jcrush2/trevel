@@ -36,12 +36,11 @@ def bomb(msg):
 		n = int(msg.text.split()[1])
 	miner=random.sample(range(n), n)
 	
-	keyboard = telebot.types.InlineKeyboardMarkup()
-	keyboard.row_width = 3
-
-	for i in 9:
-		keyboard.add(telebot.types.InlineKeyboardButton(text=f'•', callback_data=i))
-	msg_id = bot.send_message(chat_id=msg.chat.id, text=f'Разминируйте минное поле', reply_markup=keyboard).message_id
+	l = ['Яблоко', 'Груша']
+	keyboard = types.InlineKeyboardMarkup()
+	backbutton = types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
+	button_list = [types.InlineKeyboardButton(text=x, callback_data=x) for x in l]
+	keyboard.add(*button_list, backbutton)
 
 
 		
