@@ -29,26 +29,22 @@ def start(msg):
 @bot.message_handler(commands=["bo"])
 def bomb(msg):
 
-	nums=list(range(1, 10))  #generates [1, 2, ...8, 9]
+	nums=list(range(1, 10))
 	random.shuffle(nums)
-
 	keyboard = telebot.types.InlineKeyboardMarkup()
-	backbutton = telebot.types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
-	button_list = [telebot.types.InlineKeyboardButton(text=x, callback_data=x) for x in nums]
+	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
 	keyboard.add(*button_list, backbutton)
 	bot.send_message(chat_id=msg.chat.id, text='Text',reply_markup=keyboard)
-
-
 		
 @bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
 	
 
-	if  call.data == 1:
+	if  call.data == '1':
 		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💥", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"💥 {call.from_user.first_name} подорвался -5, перезапустить /bomb", parse_mode="HTML")
 		change_karma(call.from_user, call.message.chat, -5)
-	if  call.data == 2:
+	if  call.data == '2':
 		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💣", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 		change_karma(call.from_user, call.message.chat, 5)
