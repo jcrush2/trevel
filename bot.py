@@ -15,7 +15,7 @@ import config
 TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
-@bot.message_handler(commands=["start"], func=is_my_message)
+@bot.message_handler(commands=["start"])
 def start(msg):
 	"""
 	Функция для ответа на сообщение-команду для приветствия пользователя.
@@ -26,7 +26,7 @@ def start(msg):
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
 
-@bot.message_handler(commands=["bo"], func=is_my_message)
+@bot.message_handler(commands=["bo"])
 def bomb(msg):
 
 
