@@ -37,9 +37,9 @@ def bomb(msg):
 	miner=random.sample(range(n), n)
 	
 	l = ['Яблоко', 'Груша']
-	keyboard = types.InlineKeyboardMarkup()
-	backbutton = types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
-	button_list = [types.InlineKeyboardButton(text=x, callback_data=x) for x in l]
+	keyboard = telebot.types.InlineKeyboardMarkup()
+	backbutton = telebot.types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
+	button_list = [telebot.types.InlineKeyboardButton(text=x, callback_data=x) for x in l]
 	keyboard.add(*button_list, backbutton)
 
 
