@@ -30,7 +30,7 @@ def start(msg):
 
 
 @bot.message_handler(commands=["bo"])
-def bomb(msg):
+def keyboard(msg):
 	if len(msg.text.split()) == 1:
 		n=10
 	else:
