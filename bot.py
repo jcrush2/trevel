@@ -45,16 +45,16 @@ def query_handler(call):
 	
 
 	if  call.data == "1":
-
+		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💥", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"💥 {call.from_user.first_name} подорвался -5, перезапустить /bomb", parse_mode="HTML")
 	
 	if  call.data == "2":
-
+		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💣", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 	
 	else:
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} мимо бомбу +5, перезапустить /bomb", parse_mode="HTML")	
-
+		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="0", reply_markup=keyboard)
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
 
