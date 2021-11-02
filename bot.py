@@ -31,7 +31,7 @@ def bomb(msg):
 
 
 	
-	l = random.sample(range(9), 9)
+	l = [random.sample(range(n), n)]
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	backbutton = telebot.types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
 	button_list = [telebot.types.InlineKeyboardButton(text=x, callback_data=x) for x in l]
