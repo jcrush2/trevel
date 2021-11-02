@@ -36,7 +36,7 @@ def bomb(msg):
 	nums=list(range(1, n))
 	random.shuffle(nums)
 	keyboard = telebot.types.InlineKeyboardMarkup()
-	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
+	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=f"{x}") for x in nums]
 	keyboard.add(*button_list)
 	bot.send_message(chat_id=msg.chat.id, text='Text',reply_markup=keyboard)
 		
@@ -44,14 +44,14 @@ def bomb(msg):
 def query_handler(call):
 	
 
-	if  f"{call.data}" == f"1":
+	if  call.data == f"{1}":
 		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💥", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"💥 {call.from_user.first_name} подорвался -5, перезапустить /bomb", parse_mode="HTML")
-		change_karma(call.from_user, call.message.chat, -5)
-	if  f"{call.data}" == f"2":
+	
+	if  call.data == f"{2}":
 		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="💣", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-		change_karma(call.from_user, call.message.chat, 5)
+	
 	else:
 		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=" ", reply_markup=keyboard)	
 
