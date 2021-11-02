@@ -15,6 +15,12 @@ import config
 TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
+nums=list(range(1, 10))
+random.shuffle(nums)
+keyboard = telebot.types.InlineKeyboardMarkup()
+button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
+keyboard.add(*button_list)
+bot.send_message(chat_id=msg.chat.id, text='Разминируйте минное поле',reply_markup=keyboard)
 @bot.message_handler(commands=["start"])
 def start(msg):
 	"""
@@ -25,6 +31,8 @@ def start(msg):
 			"Здравствуйте, я бот, который отвечает за " +
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
+	bot.send_message(msg.chat.id, 'Привет', reply_markup=keyboard)
+
 
 @bot.message_handler(commands=["bo"])
 def bomb(msg):
