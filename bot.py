@@ -30,11 +30,6 @@ def start(msg):
 def bomb(msg):
 
 
-	if len(msg.text.split()) == 1:
-		n=9
-	else:
-		n = int(msg.text.split()[1])
-	miner=random.sample(range(n), n)
 	
 	l = ['Яблоко', 'Груша']
 	keyboard = telebot.types.InlineKeyboardMarkup()
