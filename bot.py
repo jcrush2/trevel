@@ -45,18 +45,13 @@ def bomb(msg):
 		
 @bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
-	
-
-	if  call.data == "1":
-		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='f', reply_markup=keyboard)
-		
-
-	
-	if  call.data == "2":
-		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='f', reply_markup=keyboard)
-	
-	else:
-		bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='f', reply_markup=keyboard)
+	if call.message:
+		if  call.data == "1":
+			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='f', reply_markup=keyboard)
+		if  call.data == "2":
+			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='f', reply_markup=keyboard)
+		else:
+			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='f', reply_markup=keyboard)
 
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
