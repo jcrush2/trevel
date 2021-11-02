@@ -38,17 +38,17 @@ def bomb(msg):
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
 	keyboard.add(*button_list)
-	bot.send_message(chat_id=msg.chat.id, text='Text',reply_markup=keyboard)
+	bot.send_message(chat_id=msg.chat.id, text='Разминируйте минное поле',reply_markup=keyboard)
 		
 @bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
 	
 
-	if  call.data == 1:
+	if  call.data == "1":
 
 		bot.send_message(call.message.chat.id, f"💥 {call.from_user.first_name} подорвался -5, перезапустить /bomb", parse_mode="HTML")
 	
-	if  call.data == 2:
+	if  call.data == "2":
 
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 	
