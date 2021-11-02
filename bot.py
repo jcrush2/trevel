@@ -15,12 +15,7 @@ import config
 TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
-nums=list(range(1, 10))
-random.shuffle(nums)
-keyboard = telebot.types.InlineKeyboardMarkup()
-button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
-keyboard.add(*button_list)
-bot.send_message(chat_id=msg.chat.id, text='Разминируйте минное поле',reply_markup=keyboard)
+
 @bot.message_handler(commands=["start"])
 def start(msg):
 	"""
@@ -31,7 +26,7 @@ def start(msg):
 			"Здравствуйте, я бот, который отвечает за " +
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
-	bot.send_message(msg.chat.id, 'Привет', reply_markup=keyboard)
+
 
 
 @bot.message_handler(commands=["bo"])
@@ -53,17 +48,18 @@ def query_handler(call):
 	
 
 	if  call.data == "1":
-		bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, 'Выбери:', reply_markup=keyboard)
+		bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,text="💥", reply_markup=keyboard)
 		
 		bot.send_message(call.message.chat.id, f"💥 {call.from_user.first_name} подорвался -5, перезапустить /bomb", parse_mode="HTML")
 	
 	if  call.data == "2":
-		bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, 'Выбери2:', reply_markup=keyboard)
+		bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,text="💣", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 	
 	else:
+		bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,text="0", reply_markup=keyboard)
 		bot.send_message(call.message.chat.id, f"🎉 {call.from_user.first_name} мимо бомбу +5, перезапустить /bomb", parse_mode="HTML")	
-		bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, 'Выбери3:', reply_markup=keyboard)
+
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
 
