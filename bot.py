@@ -29,12 +29,12 @@ def start(msg):
 @bot.message_handler(commands=["bo"])
 def bomb(msg):
 
-
-	
+	nums=list(range(1, 10))  #generates [1, 2, ...8, 9]
+	random.shuffle(nums)
 
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	backbutton = telebot.types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
-	button_list = [telebot.types.InlineKeyboardButton(text=x, callback_data=x) for x in 9]
+	button_list = [telebot.types.InlineKeyboardButton(text=x, callback_data=x) for x in nums]
 	keyboard.add(*button_list, backbutton)
 	bot.send_message(chat_id=msg.chat.id, text='Text',reply_markup=keyboard)
 
