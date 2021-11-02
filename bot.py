@@ -36,6 +36,7 @@ def bomb(msg):
 	backbutton = telebot.types.InlineKeyboardButton(text="Back", callback_data="MainMenu")
 	button_list = [telebot.types.InlineKeyboardButton(text=x, callback_data=x) for x in l]
 	keyboard.add(*button_list, backbutton)
+	bot.send_message(chat_id=msg.chat.id, text='Text',reply_markup=keyboard)
 
 
 		
