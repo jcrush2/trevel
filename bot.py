@@ -34,6 +34,8 @@ def keyboard_func(text):
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	button_list = [telebot.types.InlineKeyboardButton(text=text, callback_data=x) for x in nums]
 	keyboard.add(*button_list)
+	if text=='💥' or text=='💣':
+		keyboard.add(telebot.types.InlineKeyboardButton(text='🔁 перезапустить', callback_data='0'))
 	return keyboard
 	
 
