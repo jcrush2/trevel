@@ -27,8 +27,27 @@ def start(msg):
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
 
+def weather_key(text):
+    weather = types.InlineKeyboardMarkup()
+    weather.add(
+        types.InlineKeyboardButton(text=text, callback_data='weather_now'))
+    return weather
+    
+@bot.message_handler(commands=['123'])
+def handle_docs_photo(message):
+    bot.send_message(message.chat.id, 'текст над кнопкой', reply_markup=weather_func('lalala'))
 
+@bot.callback_query_handler(func=lambda call: True)
+def handler_call(call):
+    if call.data == 'weather_now':
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=get_weather_now(),
+            reply_markup=weather_func('blala'),
+            parse_mode='Markdown')
 
+'''
 @bot.message_handler(commands=["bo"])
 def keyboard(msg):
 	if len(msg.text.split()) == 1:
@@ -53,7 +72,7 @@ def query_handler(call):
 			bot.editMessageText(chat_id=call.message.chat_id,message_id=call.message.message_id,reply_markup=reply_markup)
           
 			
-'''
+
 			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1", reply_markup=keyboard)
 			
