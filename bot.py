@@ -27,8 +27,8 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет', reply_markup=keyboard1)
 @bot.message_handler(content_types=['text'])
 def send_text(message):
-    if message.text.lower() == 'Привет':
-        bot.edit_message_reply_markup(message.chat.id, message.message_id, 'Выбери:', reply_markup=keyboard2)
+	if message.text.lower() == 'привет':
+		bot.send_message(message.chat.id, 'ну Привет', reply_markup=keyboard2)
 
 
 # Дальнейший код используется для установки и удаления вебхуков
