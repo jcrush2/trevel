@@ -27,13 +27,13 @@ def start(msg):
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
 
-def weather_key(text):
+def weather_func(text):
     weather = types.InlineKeyboardMarkup()
     weather.add(
         types.InlineKeyboardButton(text=text, callback_data='weather_now'))
     return weather
     
-@bot.message_handler(commands=['123'])
+@bot.message_handler(commands=['test'])
 def handle_docs_photo(message):
     bot.send_message(message.chat.id, 'текст над кнопкой', reply_markup=weather_func('lalala'))
 
