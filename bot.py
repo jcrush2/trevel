@@ -35,7 +35,7 @@ def keyboard_func(text):
 	button_list = [telebot.types.InlineKeyboardButton(text=text, callback_data=x) for x in nums]
 	keyboard.add(*button_list)
 	if text=='💥' or text=='💣':
-		keyboard.add(telebot.types.InlineKeyboardButton(text='🔁 перезапустить', callback_data='0'))
+		keyboard.add(telebot.types.InlineKeyboardButton(text='🔁 перезапустить', callback_data='reload'))
 	return keyboard
 	
 
@@ -67,7 +67,9 @@ def query_handler(call):
 		if  call.data == "2":
 			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'{call.from_user.first_name} подорвался -5, перезапустить /bomb',reply_markup=keyboard_func('💥'))
 			return
-
+		if  call.data == "reload":
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'Разминируйте минное поле',reply_markup=keyboard_func('•'))
+			return
 			
 
 			
