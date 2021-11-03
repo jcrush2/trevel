@@ -34,7 +34,7 @@ def weather_func(text):
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
 	keyboard.add(*button_list)
-	return weather
+	return keyboard
 
 @bot.message_handler(commands=['test'])
 def handle_docs_photo(message):
@@ -59,7 +59,7 @@ def query_handler(call):
 	if call.message:
 		if  call.data == "1":
 
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text='000',reply_markup=keyboard)
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text='000',reply_markup=weather_func('blala'))
           
 			
 '''
