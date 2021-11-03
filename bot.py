@@ -60,12 +60,11 @@ def keyboard(msg):
 def query_handler(call):
 	if call.message:
 		if  call.data == "1":
-			msg = bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="ТЕКСТ", parse_mode='Markdown')
-			msg = bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=Keyboard)
-			
-			'''
 			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb',reply_markup=keyboard_func('💣'))
-          '''
+		else:
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'Разминируйте минное поле',reply_markup=keyboard_func('•'))
+			
+
 			
 '''
 			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
