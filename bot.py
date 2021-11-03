@@ -59,7 +59,7 @@ def query_handler(call):
 	if call.message:
 		if  call.data == "1":
 
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text='000',reply_markup=weather_func('blala'))
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text='000',reply_markup=keyboard)
           
 			
 '''
