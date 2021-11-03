@@ -47,7 +47,7 @@ def keyboard(msg):
 def query_handler(call):
 	if call.message:
 		if  call.data == "1":
-			keyboard=telebot.types.InlineKeyboardButton(text='0', callback_data=1)
+			keyboard=[[InlineKeyboardButton('Happy 1',callback_data='1')],[InlineKeyboardButton('Happy 2',callback_data='2')],[InlineKeyboardButton('Happy 3',callback_data='3')]]
 			
 			reply_markup=InlineKeyboardMarkup(keyboard)
 			bot.editMessageText(chat_id=call.message.chat_id,message_id=call.message.message_id,reply_markup=reply_markup)
