@@ -42,11 +42,7 @@ def keyboard(msg):
 	else:
 		n = int(msg.text.split()[1])
 		
-	nums=list(range(1, n))
-	random.shuffle(nums)
-	keyboard = telebot.types.InlineKeyboardMarkup()
-	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
-	keyboard.add(*button_list)
+
 	bot.send_message(chat_id=msg.chat.id, text='Разминируйте минное поле',reply_markup=keyboard)
 		
 @bot.callback_query_handler(func=lambda call: True)
