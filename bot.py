@@ -61,8 +61,13 @@ def query_handler(call):
 	if call.message:
 		if  call.data == "1":
 			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb',reply_markup=keyboard_func('💣'))
+			return
+		if  call.data == "2":
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'{call.from_user.first_name} подорвался -5, перезапустить /bomb',reply_markup=keyboard_func('💥'))
+			return
 		else:
 			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'Разминируйте минное поле',reply_markup=keyboard_func('•'))
+			return
 			
 
 			
