@@ -27,26 +27,19 @@ def start(msg):
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
 
+
 def weather_func(text):
-    weather = types.InlineKeyboardMarkup()
-    weather.add(
-        types.InlineKeyboardButton(text=text, callback_data='weather_now'))
-    return weather
-    
+	nums=list(range(1, 10))
+	random.shuffle(nums)
+	keyboard = telebot.types.InlineKeyboardMarkup()
+	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
+	keyboard.add(*button_list)
+	return weather
+
 @bot.message_handler(commands=['test'])
 def handle_docs_photo(message):
     bot.send_message(message.chat.id, 'текст над кнопкой', reply_markup=weather_func('lalala'))
-
-@bot.callback_query_handler(func=lambda call: True)
-def handler_call(call):
-    if call.data == 'weather_now':
-        bot.edit_message_text(
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            text='000',
-            reply_markup=weather_func('blala'))
-
-'''
+    
 @bot.message_handler(commands=["bo"])
 def keyboard(msg):
 	if len(msg.text.split()) == 1:
@@ -65,13 +58,11 @@ def keyboard(msg):
 def query_handler(call):
 	if call.message:
 		if  call.data == "1":
-			keyboard=[[InlineKeyboardButton('Happy 1',callback_data='1')],[InlineKeyboardButton('Happy 2',callback_data='2')],[InlineKeyboardButton('Happy 3',callback_data='3')]]
-			
-			reply_markup=InlineKeyboardMarkup(keyboard)
-			bot.editMessageText(chat_id=call.message.chat_id,message_id=call.message.message_id,reply_markup=reply_markup)
+
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text='000',reply_markup=weather_func('blala'))
           
 			
-
+'''
 			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1", reply_markup=keyboard)
 			
