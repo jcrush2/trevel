@@ -43,9 +43,8 @@ def handler_call(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text=get_weather_now(),
-            reply_markup=weather_func('blala'),
-            parse_mode='Markdown')
+            text='000',
+            reply_markup=weather_func('blala'))
 
 '''
 @bot.message_handler(commands=["bo"])
