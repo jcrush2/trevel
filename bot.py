@@ -28,17 +28,19 @@ def start(msg):
 	bot.send_message(msg.chat.id, reply_text)
 
 
-def weather_func(text):
+def keyboard_func(text):
 	nums=list(range(1, 10))
 	random.shuffle(nums)
 	keyboard = telebot.types.InlineKeyboardMarkup()
 	button_list = [telebot.types.InlineKeyboardButton(text=text, callback_data=x) for x in nums]
 	keyboard.add(*button_list)
 	return keyboard
+	
+
 
 @bot.message_handler(commands=['test'])
 def handle_docs_photo(message):
-    bot.send_message(message.chat.id, 'Разминируйте минное поле', reply_markup=weather_func('•'))
+    bot.send_message(message.chat.id, 'Разминируйте минное поле', reply_markup=keyboard_func('•'))
     
 @bot.message_handler(commands=["bo"])
 def keyboard(msg):
@@ -58,9 +60,12 @@ def keyboard(msg):
 def query_handler(call):
 	if call.message:
 		if  call.data == "1":
-
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb',reply_markup=weather_func('💣'))
-          
+			msg = bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="ТЕКСТ", parse_mode='Markdown')
+			msg = bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=Keyboard)
+			
+			'''
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb',reply_markup=keyboard_func('💣'))
+          '''
 			
 '''
 			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
