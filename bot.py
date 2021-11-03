@@ -16,12 +16,6 @@ TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
 
-nums=list(range(1, 10))
-random.shuffle(nums)
-keyboard = telebot.types.InlineKeyboardMarkup()
-button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
-keyboard.add(*button_list)
-	
 @bot.message_handler(commands=["start"])
 def start(msg):
 	"""
@@ -32,7 +26,6 @@ def start(msg):
 			"Здравствуйте, я бот, который отвечает за " +
 			" подсчет кармы в чате @khvchat.")
 	bot.send_message(msg.chat.id, reply_text)
-    bot.send_message(message.chat.id, 'ну Привет', reply_markup=keyboard)
 
 
 
@@ -54,8 +47,17 @@ def keyboard(msg):
 def query_handler(call):
 	if call.message:
 		if  call.data == "1":
+			keyboard=telebot.types.InlineKeyboardButton(text='0', callback_data=1)
+			
+			reply_markup=InlineKeyboardMarkup(keyboard)
+			bot.editMessageText(chat_id=call.message.chat_id,message_id=call.message.message_id,reply_markup=reply_markup)
+          
+			
+'''
 			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
 			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1", reply_markup=keyboard)
+			
+
 			return
 		if  call.data == "2":
 			bot.send_message(call.message.chat.id, f"🎉 2 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
@@ -63,9 +65,9 @@ def query_handler(call):
 			return
 		else:
 			bot.send_message(call.message.chat.id, f"🎉 3 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь3", reply_markup=keyboard)
+			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь3", reply_markup=keyboard)
 			return
-
+'''
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
 
