@@ -16,50 +16,20 @@ TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
 
-nums=list(range(1, 10))
-random.shuffle(nums)
-keyboard = telebot.types.InlineKeyboardMarkup()
-button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
-keyboard.add(*button_list)
-	
-@bot.message_handler(commands=["start"])
-def start(msg):
-	"""
-	Функция для ответа на сообщение-команду для приветствия пользователя.
-	:param msg: Объект сообщения-команды
-	"""
-	reply_text = (
-			"Здравствуйте, я бот, который отвечает за " +
-			" подсчет кармы в чате @khvchat.")
-	bot.send_message(msg.chat.id, reply_text)
 
+keyboard1 = telebot.types.ReplyKeyboardMarkup(True, True)
+keyboard1.row('Информация')
+keyboard2 = telebot.types.ReplyKeyboardMarkup(True, True)
+keyboard2.row('1', '2', '3')
 
+@bot.message_handler(commands=['start'])
+def start_message(message):
+    bot.send_message(message.chat.id, 'Привет', reply_markup=keyboard1)
+@bot.message_handler(content_types=['text'])
+def send_text(message):
+    if message.text.lower() == 'Привет':
+        bot.edit_message_reply_markup(message.chat.id, message.message_id, 'Выбери:', reply_markup=keyboard2)
 
-@bot.message_handler(commands=["bo"])
-def keyboard(msg):
-	if len(msg.text.split()) == 1:
-		n=10
-	else:
-		n = int(msg.text.split()[1])
-		
-
-	bot.send_message(chat_id=msg.chat.id, text='Разминируйте минное поле',reply_markup=keyboard)
-		
-@bot.callback_query_handler(func=lambda call: True)
-def query_handler(call):
-	if call.message:
-		if  call.data == "1":
-			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1", reply_markup=keyboard)
-			return
-		if  call.data == "2":
-			bot.send_message(call.message.chat.id, f"🎉 2 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь2", reply_markup=keyboard)
-			return
-		else:
-			bot.send_message(call.message.chat.id, f"🎉 3 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь3", reply_markup=keyboard)
-			return
 
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
