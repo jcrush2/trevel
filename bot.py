@@ -16,6 +16,12 @@ TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 	
 
+nums=list(range(1, 10))
+random.shuffle(nums)
+keyboard = telebot.types.InlineKeyboardMarkup()
+button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
+keyboard.add(*button_list)
+	
 @bot.message_handler(commands=["start"])
 def start(msg):
 	"""
