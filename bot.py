@@ -32,13 +32,13 @@ def weather_func(text):
 	nums=list(range(1, 10))
 	random.shuffle(nums)
 	keyboard = telebot.types.InlineKeyboardMarkup()
-	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
+	button_list = [telebot.types.InlineKeyboardButton(text=text, callback_data=x) for x in nums]
 	keyboard.add(*button_list)
 	return keyboard
 
 @bot.message_handler(commands=['test'])
 def handle_docs_photo(message):
-    bot.send_message(message.chat.id, 'текст над кнопкой', reply_markup=weather_func('lalala'))
+    bot.send_message(message.chat.id, 'Разминируйте минное поле', reply_markup=weather_func('•'))
     
 @bot.message_handler(commands=["bo"])
 def keyboard(msg):
@@ -59,7 +59,7 @@ def query_handler(call):
 	if call.message:
 		if  call.data == "1":
 
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text='000',reply_markup=weather_func('blala'))
+			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb',reply_markup=weather_func('💣'))
           
 			
 '''
