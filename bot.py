@@ -2,124 +2,83 @@
 import datetime
 import hashlib
 import string
-import uuid
 import os 
-import speech_recognition as sr
 import random
 import requests
 import json
 import re
+
+import md5
+from xml.etree import ElementTree
+
 from flask import Flask, request
 import telebot
 from telebot import types
 import config
 
+YANDEX_KEY = 'ce2ee061-4d3f-40aa-adfe-6af946fd65a4'
+
+# https://tech.yandex.ru/speechkit/cloud/doc/dg/concepts/speechkit-dg-overview-technology-recogn-docpage/
+# Language code for speech recognition. You can use: ru-RU, en-US, uk-UK, tr-TR
+VOICE_LANGUAGE = 'ru-RU'
+
+MAX_MESSAGE_SIZE = 1000 * 50  # in bytes
+MAX_MESSAGE_DURATION = 15  # in seconds
+
 language='ru_RU'
 TELEGRAM_API = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_API)
 
-r = sr.Recognizer()
+@bot.message_handler(commands=['start'])
+def start_prompt(message):
+    """Print prompt to input voice message.
+    """
+    reply = ' '.join((
+      "Press and hold screen button with microphone picture.",
+      "Say your phrase and release the button.",
+    ))
+    return bot.reply_to(message, reply)
 
-def recognise(filename):
-    with sr.AudioFile(filename) as source:
-        audio_text = r.listen(source)
-        try:
-            text = r.recognize_google(audio_text,language=language)
-            print('Converting audio transcripts into text ...')
-            print(text)
-            return text
-        except:
-            print('Sorry.. run again...')
-            return "Sorry.. run again..."
 
 @bot.message_handler(content_types=['voice'])
-def voice_processing(message):
-    filename = str(uuid.uuid4())
-    file_name_full="./voice/"+filename+".ogg"
-    file_name_full_converted="./ready/"+filename+".wav"
-    file_info = bot.get_file(message.voice.file_id)
-    downloaded_file = bot.download_file(file_info.file_path)
-    with open(file_name_full, 'wb') as new_file:
-        new_file.write(downloaded_file)
-    os.system("ffmpeg -i "+file_name_full+"  "+file_name_full_converted)
-    text=recognise(file_name_full_converted)
-    bot.reply_to(message, text)
-    os.remove(file_name_full)
-    os.remove(file_name_full_converted)
-	
+def echo_voice(message):
+    """Voice message handler.
+    """
+    data = message.voice
+    if (data.file_size > MAX_MESSAGE_SIZE) or (data.duration > MAX_MESSAGE_DURATION):
+        reply = ' '.join((
+          "The voice message is too big.",
+          "Maximum duration: {} sec.".format(MAX_MESSAGE_DURATION),
+          "Try to speak in short.",
+        ))
+        return bot.reply_to(message, reply)
 
-@bot.message_handler(commands=["start"])
-def start(msg):
-	"""
-	Функция для ответа на сообщение-команду для приветствия пользователя.
-	:param msg: Объект сообщения-команды
-	"""
-	reply_text = (
-			"Здравствуйте, я бот, который отвечает за " +
-			" подсчет кармы в чате @khvchat.")
-	bot.send_message(msg.chat.id, reply_text)
+    file_url = "https://api.telegram.org/file/bot{}/{}".format(
+      bot.token,
+      bot.get_file(data.file_id).file_path
+    )
 
+    xml_data = requests.post(
+      "https://asr.yandex.net/asr_xml?uuid={}&key={}&topic={}&lang={}".format(
+        md5.new(str(message.from_user.id)).hexdigest(),
+        YANDEX_KEY,
+        'queries',
+        VOICE_LANGUAGE
+      ),
+      data=requests.get(file_url).content,
+      headers={"Content-type": 'audio/ogg;codecs=opus'}
+    ).content
 
-def keyboard_func(text):
-	nums=list(range(1, 10))
-	random.shuffle(nums)
-	keyboard = telebot.types.InlineKeyboardMarkup()
-	button_list = [telebot.types.InlineKeyboardButton(text=text, callback_data=x) for x in nums]
-	keyboard.add(*button_list)
-	if text=='💥' or text=='💣':
-		keyboard.add(telebot.types.InlineKeyboardButton(text='🔁 перезапустить', callback_data='reload'))
-	return keyboard
-	
+    e_tree = ElementTree.fromstring(xml_data)
+    if not int(e_tree.attrib.get('success', '0')):
+        return bot.reply_to(message, "ERROR: {}".format(xml_data))
 
+    text = e_tree[0].text
 
-@bot.message_handler(commands=['test'])
-def handle_docs_photo(message):
-    bot.send_message(message.chat.id, 'Разминируйте минное поле', reply_markup=keyboard_func('•'))
-    
-@bot.message_handler(commands=["bo"])
-def keyboard(msg):
-	if len(msg.text.split()) == 1:
-		n=10
-	else:
-		n = int(msg.text.split()[1])
-		
-	nums=list(range(1, n))
-	random.shuffle(nums)
-	keyboard = telebot.types.InlineKeyboardMarkup()
-	button_list = [telebot.types.InlineKeyboardButton(text='•', callback_data=x) for x in nums]
-	keyboard.add(*button_list)
-	bot.send_message(chat_id=msg.chat.id, text='Разминируйте минное поле',reply_markup=keyboard)
-		
-@bot.callback_query_handler(func=lambda call: True)
-def query_handler(call):
-	if call.message:
-		if  call.data == "1":
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'🎉 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb',reply_markup=keyboard_func('💣'))
-			return
-		if  call.data == "2":
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'{call.from_user.first_name} подорвался -5, перезапустить /bomb',reply_markup=keyboard_func('💥'))
-			return
-		if  call.data == "reload":
-			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text=f'Разминируйте минное поле',reply_markup=keyboard_func('•'))
-			return
-			
+    if ('<censored>' in text) or (not text):
+        return bot.reply_to(message, "Don't understand you, please repeat.")
 
-			
-'''
-			bot.send_message(call.message.chat.id, f"🎉 1 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь1", reply_markup=keyboard)
-			
-
-			return
-		if  call.data == "2":
-			bot.send_message(call.message.chat.id, f"🎉 2 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь2", reply_markup=keyboard)
-			return
-		else:
-			bot.send_message(call.message.chat.id, f"🎉 3 {call.from_user.first_name} обезвредил бомбу +5, перезапустить /bomb", parse_mode="HTML")
-			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Пыщь3", reply_markup=keyboard)
-			return
-'''
+    return bot.reply_to(message, text)
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
 
