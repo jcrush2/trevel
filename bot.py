@@ -11,8 +11,8 @@ from telebot import types
 import config
 
 
-TELEGRAM_KEY = os.environ["telegram_token"]
-bot = telebot.TeleBot(TELEGRAM_KEY)
+TELEGRAM_API = os.environ["telegram_token"]
+bot = telebot.TeleBot(TELEGRAM_API)
 
 
 @bot.message_handler(commands=["бан2"], func=reply_exist)
