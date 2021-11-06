@@ -8,73 +8,63 @@ import requests
 import json
 import re
 
-import md5
-from xml.etree import ElementTree
 
 from flask import Flask, request
 import telebot
 from telebot import types
 import config
 
-YANDEX_KEY = 'ce2ee061-4d3f-40aa-adfe-6af946fd65a4'
-VOICE_LANGUAGE = 'ru-RU'
-MAX_MESSAGE_SIZE = 1000 * 50  # in bytes
-MAX_MESSAGE_DURATION = 15  # in seconds
-language='ru_RU'
 
 TELEGRAM_KEY = os.environ["telegram_token"]
 bot = telebot.TeleBot(TELEGRAM_KEY)
 
-@bot.message_handler(commands=['start'])
-def start_prompt(message):
-    """Print prompt to input voice message.
-    """
-    reply = ' '.join((
-      "Press and hold screen button with microphone picture.",
-      "Say your phrase and release the button.",
-    ))
-    return bot.reply_to(message, reply)
+
+@bot.message_handler(commands=["бан2"], func=reply_exist)
+def zaBan(msg):
+	if msg.chat.type == "private":
+		return
+		'''
+	user = bot.get_chat_member(msg.chat.id, msg.reply_to_message.from_user.id)
+	if user.status == 'administrator' or user.status == 'creator':
+		return
+	bot.send_message(msg.chat.id, f"<a href='tg://user?id=55910350'>🔫</a> <b>{msg.from_user.first_name}</b> предлагает выгнать <b>{msg.reply_to_message.from_user.first_name}</b> из Хабчата!", parse_mode="HTML")
+	bot.send_poll(msg.chat.id, f'Согласны выгнать {msg.reply_to_message.from_user.first_name} из Чата?', ['Выгнать', 'Заткнуть', 'Простить'],is_anonymous=False)
+	'''
+	user = bot.get_chat_member(msg.chat.id, msg.reply_to_message.from_user.id)
+	if user.status == 'administrator' or user.status == 'creator':
+		return
+	mutePoll=bot.send_poll(msg.chat.id, f'{msg.from_user.first_name} предлагает заткнуть {msg.reply_to_message.from_user.first_name}🔫 в Хабчате, Согласны?', ['Заткнуть', 'Простить'], False, close_date=int(round(time.time() + 500)))
+	
+	print(mutePoll.id)
+	pollAnswers = [[],[]]
+	pollVoteCount = 0
+	@bot.poll_handler(func=lambda m: True)
+	def voteCounter(votes):
+		global pollVoteCount
+		pollVoteCount = votes.total_voter_count
+	@bot.poll_answer_handler(func=lambda m: True)
+	def polls(count):
+		global pollVoteCount
+		if (len(count.option_ids) > 0):
+			if (count.user.id not in pollAnswers[0]) and (count.user.id not in pollAnswers[1]):
+				if (count.option_ids[0] == 0):
+					pollAnswers[0].append(count.user.id)
+				elif (count.option_ids[0] == 1):
+					pollAnswers[1].append(count.user.id)
+		else:
+			if (count.user.id in pollAnswers[0]):
+				pollAnswers[0].remove(count.user.id)
+			elif (count.user.id in pollAnswers[1]):
+				pollAnswers[1].remove(count.user.id)
+		if (len(pollAnswers[0]) >= 1):
+			prosent = pollVoteCount / len(pollAnswers[0])
+			if (prosent >= 0.7):
+				bot.restrict_chat_member(msg.chat.id, msg.reply_to_message.from_user.id, time.time() + 3600, False)
+				bot.reply_to(msg, "Участник заткнут на 1 час!")
+				print(1, mutePoll.id)
+				bot.stop_poll(msg.chat.id, mutePoll.id)
 
 
-@bot.message_handler(content_types=['voice'])
-def echo_voice(message):
-    """Voice message handler.
-    """
-    data = message.voice
-    if (data.file_size > MAX_MESSAGE_SIZE) or (data.duration > MAX_MESSAGE_DURATION):
-        reply = ' '.join((
-          "The voice message is too big.",
-          "Maximum duration: {} sec.".format(MAX_MESSAGE_DURATION),
-          "Try to speak in short.",
-        ))
-        return bot.reply_to(message, reply)
-
-    file_url = "https://api.telegram.org/file/bot{}/{}".format(
-      bot.token,
-      bot.get_file(data.file_id).file_path
-    )
-
-    xml_data = requests.post(
-      "https://asr.yandex.net/asr_xml?uuid={}&key={}&topic={}&lang={}".format(
-        md5.new(str(message.from_user.id)).hexdigest(),
-        YANDEX_KEY,
-        'queries',
-        VOICE_LANGUAGE
-      ),
-      data=requests.get(file_url).content,
-      headers={"Content-type": 'audio/ogg;codecs=opus'}
-    ).content
-
-    e_tree = ElementTree.fromstring(xml_data)
-    if not int(e_tree.attrib.get('success', '0')):
-        return bot.reply_to(message, "ERROR: {}".format(xml_data))
-
-    text = e_tree[0].text
-
-    if ('<censored>' in text) or (not text):
-        return bot.reply_to(message, "Don't understand you, please repeat.")
-
-    return bot.reply_to(message, text)
 # Дальнейший код используется для установки и удаления вебхуков
 server = Flask(__name__)
 
