@@ -4,10 +4,6 @@ import hashlib
 import string
 import os 
 import random
-import requests
-import json
-import re
-
 
 from flask import Flask, request
 import telebot
